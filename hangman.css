@@ -1,0 +1,101 @@
+
+
+table {
+    table-layout: fixed;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+td {
+    width: 1%;
+}
+
+body, select {
+    text-align: left;
+    font-family: sans-serif;
+    font-size: calc(3px + 1vw); /* Results in 1vw with minimum of 3px */
+    min-font-size: 10px;
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+h1 {
+    font-family: "Courier New", "Courier", monospaced, serif;
+    font-size: calc(6px + 5vw);
+    margin-bottom: 0;
+}
+
+.hangmanWord {
+    font-family: "Courier New", "Courier", monospaced, serif;
+    letter-spacing: .5vw;
+    font-size: 8vw;
+    text-align: center;
+    margin-bottom: 0;
+    margin-top: 2vw;
+}
+
+.missedLetter {
+    color: red;
+}
+
+.letterBtn {
+    font-family: "Courier New", "Courier", monospaced, serif;
+    font-size: calc(4px + 3vw);
+    width: 100%;
+    text-align: center;
+}
+
+canvas {
+    float: left;
+    width: 100%;
+    height: 100%;
+}
+
+.nowrap {
+    white-space: nowrap;
+    text-align: left;
+}
+
+.spaceBelow {
+    margin-bottom: 2vw;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 10vw;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0); /* Color for browsers not supporting opacity */
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 1vw;
+    border: 1px solid #888;
+    width: 80vw;
+}
+
+.modalClose {
+    color: #aaaaaa;
+    float: right;
+    font-size: 5vw;
+    font-weight: bold;
+    /* padding-top: -100px; */
+    position: relative;
+    top: -1.7vw;
+    left: .5vw;
+}
+
+.modalClose:hover,
+.modalClose:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}

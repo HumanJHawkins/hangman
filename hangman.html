@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="hangman.css" />
+    <script type="text/javascript" src="hangman.js" async></script>
+    <title>Hangman</title>
+</head>
+<body onLoad="initHangman()">
+<!-- Modal preferences dialog -->
+<div id="preferences" class="modal">
+    <div class="modal-content">
+        <div id="btnClosePreferences" class="modalClose">&times;</div>
+        <p>Preferences: </p>
+        <form>
+            <span class="nowrap"><label for="wordLength">Word Length:</label>
+                <!-- Low and high character length of potential words -->
+            <select id="wordLength" onChange="updateWordPoolFiltered()">
+                <option value="{&quot;low&quot;: 4, &quot;high&quot;: 10}">Normal</option>
+                <option value="{&quot;low&quot;: 2, &quot;high&quot;: 3}">Short</option>
+                <option value="{&quot;low&quot;: 4, &quot;high&quot;: 6}">Medium</option>
+                <option value="{&quot;low&quot;: 7, &quot;high&quot;: 12}">Long</option>
+            </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</span>
+                    <span class="nowrap"><label for="wordLevel">Word Level:&nbsp;</label>
+                        <!-- Low and high grade level of potential words -->
+            <select id="wordLevel" onChange="updateWordPoolFiltered()">
+                <option value="{&quot;low&quot;: 2, &quot;high&quot;: 12}">Normal</option>
+                <option value="{&quot;low&quot;: -1, &quot;high&quot;: 1}">Beginning Readers</option>
+                <option value="{&quot;low&quot;: 2, &quot;high&quot;: 5}">Elementary</option>
+                <option value="{&quot;low&quot;: 6, &quot;high&quot;: 8}">Middle School</option>
+                <option value="{&quot;low&quot;: 9, &quot;high&quot;: 12}">High School</option>
+            </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                    <span class="nowrap"><label for="gameDifficulty">Difficulty:&nbsp;</label>
+                        <!-- Number of incorrect guesses before loss.  -->
+            <select class="spaceBelow" id="gameDifficulty" onChange="updateMaxMisses()">
+                <option value="10">Normal</option>
+                <option value="7">Hard</option>
+                <option value="5">Epic</option>
+                <option value="3">Stupid</option>
+            </select></span>
+        </form>
+    </div>
+</div>
+<button id="btnPreferences">Preferences</button>
+
+
+
+<div id="titleAndCanvas">
+    <canvas id="hangmanCanvas"></canvas>
+    <h1>Hangman</h1></div>
+<p>Click or press a letter to make a guess. Ctrl-Shift-Enter to start a <a href="javascript:resetGame();">new
+    game</a>.</p>
+
+<div id="letters"></div>
+<div id="theWord"></div>
+<div id="emPixelTest" style="height:0;width:0;outline:none;border:none;padding:0px;margin:0px;"></div>
+
+
+</body>
+</html>
+
+
