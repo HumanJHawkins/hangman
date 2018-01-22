@@ -12,7 +12,7 @@
 <div id="preferences" class="modal">
     <div class="modal-content">
         <div id="btnClosePreferences" class="modalClose">&times;</div>
-        <p>Preferences: </p>
+        <h3>Preferences: </h3>
         <form>
             <span class="nowrap"><label for="wordLength">Word Length:</label>
                 <!-- Low and high character length of potential words -->
@@ -42,21 +42,26 @@
         </form>
     </div>
 </div>
-<button id="btnPreferences">Preferences</button>
 
+<div id="entirePage">
+    <div id="divCanvas">
+        <canvas id="hangmanCanvas"></canvas>
+    </div>
+    <div id="divButtonBar" class="floatRight">
+        <button id="btnPreferences" title="Preferences" class="iconButton"><img src="hangmanImage/preferences.png"
+                                                                                class="iconButtonImage"/></button>
+        <button id="btnHelp" title="Help" class="iconButton"><img src="hangmanImage/help.png" class="iconButtonImage"/>
+        </button>
+        <button id="btnblank" class="iconButton"><img src="hangmanImage/blank.png" class="iconButtonImage"/></button>
+        <button id="btnNewGame" title="New Game" class="iconButton"><img src="hangmanImage/newGame.png"
+                                                                         class="iconButtonImage"/></button>
+    </div>
+    <div id="divTitle"><h1>Hangman</h1></div>
+    <div id="divLetters"></div>
+    <div id="divWord"></div>
+</div>
 
-
-<div id="titleAndCanvas">
-    <canvas id="hangmanCanvas"></canvas>
-    <h1>Hangman</h1></div>
-<p>Click or press a letter to make a guess. Ctrl-Shift-Enter to start a <a href="javascript:resetGame();">new
-    game</a>.</p>
-
-<div id="letters"></div>
-<div id="theWord"></div>
 <div id="emPixelTest" style="height:0;width:0;outline:none;border:none;padding:0px;margin:0px;"></div>
-
-
 </body>
 </html>
 

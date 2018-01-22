@@ -212,7 +212,7 @@ function drawHangmanWord() {
         }
     }
     wordDisplay = wordDisplay + '</p>';
-    document.getElementById("theWord").innerHTML = wordDisplay;
+    document.getElementById("divWord").innerHTML = wordDisplay;
 }
 
 
@@ -238,7 +238,7 @@ function drawLetterTable() {
         guessHTML = guessHTML + '</tr>';
     }
     guessHTML = guessHTML + '</table>';
-    document.getElementById("letters").innerHTML = guessHTML;
+    document.getElementById("divLetters").innerHTML = guessHTML;
 }
 
 function handleGuess(theGuess) {
@@ -577,18 +577,18 @@ addEventListener('resize', function () {
 
 buttonPreferences.onclick = function () {
     dialogPreferences.style.display = "block";
-}
+};
 
 buttonClosePreferences.onclick = function () {
     dialogPreferences.style.display = "none";
-}
+};
 
 // When the user clicks anywhere outside of the dialogPreferences, close it
 window.onclick = function (event) {
     if (event.target == dialogPreferences) {
         dialogPreferences.style.display = "none";
     }
-}
+};
 
 
 updateMaxMisses();
