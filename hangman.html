@@ -10,21 +10,21 @@
 <body onLoad="newGame()">
 <!-- Modal preferences dialog. Hidden while not in use. -->
 <div id="preferences" class="modal">
-    <div class="modal-content">
+    <div id="divPreferenceDialog" class="modal-content">
         <div id="btnClosePreferences" class="modalClose" onClick="dialogPreferences.style.display='none'">&times;</div>
         <h3>Preferences: </h3>
         <form>
             <!-- Select control for low and high character length of potential words -->
-            <span class="nowrap"><label for="wordLength">Word Length:</label>
+            <span class="preferenceText"><label for="wordLength">Word Length:</label>
                 <select id="wordLength" onChange="updateWordPoolFiltered()">
                     <option value="{&quot;low&quot;: 4, &quot;high&quot;: 10}">Normal</option>
                     <option value="{&quot;low&quot;: 2, &quot;high&quot;: 3}">Short</option>
                     <option value="{&quot;low&quot;: 4, &quot;high&quot;: 6}">Medium</option>
                     <option value="{&quot;low&quot;: 7, &quot;high&quot;: 12}">Long</option>
-                </select>
+                </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </span>
             <!-- Select control for low and high grade level of potential words -->
-            <span class="nowrap"><label for="wordLevel">Word Level:&nbsp;</label>
+            <span class="preferenceText"><label for="wordLevel">Word Level:&nbsp;</label>
                 <select id="wordLevel" onChange="updateWordPoolFiltered()">
                     <option value="{&quot;low&quot;: 2, &quot;high&quot;: 12}">Normal</option>
                     <option value="{&quot;low&quot;: -1, &quot;high&quot;: 1}">Beginning Readers</option>
@@ -34,24 +34,22 @@
                 </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </span>
             <!-- Select control for number of incorrect guesses before loss.  -->
-            <span class="nowrap"><label for="gameDifficulty">Difficulty:&nbsp;</label>
+            <span class="preferenceText"><label for="gameDifficulty">Difficulty:&nbsp;</label>
             <select class="spaceBelow" id="gameDifficulty" onChange="updateMaxMisses()">
                 <option value="10">Normal</option>
                 <option value="7">Hard</option>
                 <option value="5">Epic</option>
                 <option value="3">Stupid</option>
-            </select>
+            </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </span>
         </form>
+        <div id="divWordCount"></div>
     </div>
 </div>
 
 <!-- "entirePage" div populated by javascript based on window size and aspect ratio. -->
 <div id="entirePage">
 </div>
-
-<!-- "emPixelTest" has no visible use. It is used to test width of 1 em unit.
-<div id="emPixelTest" style="height:0;width:0;outline:none;border:none;padding:0px;margin:0px;"></div>
 </body>
 </html>
 

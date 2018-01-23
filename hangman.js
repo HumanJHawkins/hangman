@@ -70,7 +70,6 @@ vocabRequest.send();
 function newGame() {
     hitCount = 0;
     missCount = 0;
-    updateGameState();          // Will be "PENDING" if hitCount and missCount are 0.
 
     // Initialize guesses to <nothing guessed yet>
     alphabetGuesses = [];
@@ -78,17 +77,14 @@ function newGame() {
         alphabetGuesses.push(false);
     }
 
+    updateGameState();          // Will be "PENDING" if hitCount and missCount are 0.
     handleDisplaySize();        // Requires defined alphabetGuesses, hitCount, misscount. Handles full screen draw.
-    updateMaxMisses();          // Operates based on game difficulty preference.
-    updateEnabledState();       // Requires preference controls created in handleDisplaySize.
-    updateWordPoolFiltered();   // Requires div created in handleDisplaySize. Also selects word and redraws if gameState pending.
+    updateMaxMisses();          // Pulls from game difficulty preference, built in handleDisplaySize().
+    updateEnabledState();       // Requires preference controls created in handleDisplaySize().
+    updateWordPoolFiltered();   // Requires div created in handleDisplaySize(). Also selects word and redraws if gameState pending.
 }
 
 function handleDisplaySize() {
-    // Measure the em unit in pixels.
-    document.getElementById("emPixelTest").style.height = "1em";
-    emPixels = document.getElementById("emPixelTest").offsetHeight;
-
     // Window dimensions in pixels. Although we use view width for almost everything, most decisions about layout are
     //   best made based on actual pixel count, or aspect ratio. See also:
     //   https://docs.microsoft.com/en-us/windows/uwp/design/layout/screen-sizes-and-breakpoints-for-responsive-design
@@ -104,16 +100,16 @@ function handleDisplayRefresh() {
     updateStylesheet("canvas", "float", "left");
     updateStylesheet("canvas", "width", "33.333%");
 
-    // Formerly .62. See how .7 behaves.
-    if (windowAspect < .7) {        // Extreme tall (Galaxy S8, etc.
-        // Place title and button bar above canvas. Center so letter buttons and word go below.
+    if (windowAspect < .75) {
+        // Extreme tall (Galaxy S8, etc.) Place title and button bar above canvas. Center so letter buttons and word go below.
         updateStylesheet("canvas", "display", "block");
         updateStylesheet("canvas", "margin", "0 auto");
         updateStylesheet("canvas", "float", "none");
-        updateStylesheet("canvas", "width", "75%");
+        updateStylesheet("canvas", "width", "80%");
+        updateStylesheet("canvas", "padding-bottom", "1vw");
         document.getElementById("entirePage").innerHTML =
             "<div id=\"divButtonBar\" class=\"floatRight\">" +
-            "   <img src=\"hangmanImage/preferences.png\" onClick=\"dialogPreferences.style.display='block'\" class=\"iconButtonImage\"/>" +
+            "   <img src=\"hangmanImage/preferences.png\" onClick=\"showPreferences()\" class=\"iconButtonImage\"/>" +
             "   <img src=\"hangmanImage/help.png\" class=\"iconButtonImage\"/>" +
             "   <img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
             "   <img src=\"hangmanImage/newGame.png\" onClick=\"resetGame()\" class=\"iconButtonImage\"/>" +
@@ -127,7 +123,7 @@ function handleDisplayRefresh() {
         document.getElementById("entirePage").innerHTML =
             "<div id=\"divCanvas\"><canvas id=\"hangmanCanvas\"></canvas></div>" +
             "<div id=\"divButtonBar\" class=\"floatRight\">" +
-            "   <img src=\"hangmanImage/preferences.png\" onClick=\"dialogPreferences.style.display='block'\" class=\"iconButtonImage\"/>" +
+            "   <img src=\"hangmanImage/preferences.png\" onClick=\"showPreferences()\" class=\"iconButtonImage\"/>" +
             "   <img src=\"hangmanImage/help.png\" class=\"iconButtonImage\"/>" +
             "   <img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
             "   <img src=\"hangmanImage/newGame.png\" onClick=\"resetGame()\" class=\"iconButtonImage\"/>" +
@@ -157,18 +153,39 @@ function handleDisplayRefresh() {
     drawHangman();
 }
 
+function showPreferences() {
+    dialogPreferences.style.display = 'block';
+}
 function updateMaxMisses() {
+    if (gameState === GAME_STATE.PROGRESSING || gameState === GAME_STATE.IMPERILED) {
+        if (confirm("Apply this difficulty change to the current game?\n\nClick 'Cancel' to finish this game " +
+                "first. Your changes will apply to the next game.")) {
+            // Dismiss the preferences dialog.
+            dialogPreferences.style.display = "none";
+            maxMisses = parseInt(document.getElementById('gameDifficulty').value);
+            updateGameState();
+
+            drawHangman();
+            drawLetterTable();
+            drawHangmanWord();
+            return;
+        } else {
+            return;
+        }
+    }
+
     maxMisses = parseInt(document.getElementById('gameDifficulty').value);
+    drawHangman();
 }
 
 function updateGameState() {
     if (hitCount + missCount === 0 || word === undefined) {
         gameState = GAME_STATE.PENDING;
-    } else if (missCount === maxMisses) {
+    } else if (missCount >= maxMisses) {    // Greater than can happen if difficulty changed mid-game.
         gameState = GAME_STATE.LOST;
     } else if (hitCount === word.length) {
         gameState = GAME_STATE.WON;
-    } else if (hitCount < 0 || hitCount > word.length || missCount < 0 || missCount > maxMisses) {
+    } else if (hitCount < 0 || hitCount > word.length || missCount < 0) {
         gameState = GAME_STATE.ERROR;
     } else if (missCount >= (maxMisses * .6)) {
         gameState = GAME_STATE.IMPERILED;
@@ -178,15 +195,13 @@ function updateGameState() {
 }
 
 function updateEnabledState() {
-    if (gameState === GAME_STATE.PROGRESSING || gameState === GAME_STATE.IMPERILED) {
-        document.getElementById("gameDifficulty").disabled = true;
-        document.getElementById("wordLength").disabled = true;
-        document.getElementById("wordLevel").disabled = true;
-    } else {
-        document.getElementById("gameDifficulty").disabled = false;
-        document.getElementById("wordLength").disabled = false;
-        document.getElementById("wordLevel").disabled = false;
-    }
+    // Relying on the preferences button handling to prevent getting here without warning. So default all to enabled.
+    document.getElementById("gameDifficulty").disabled = false;
+    document.getElementById("wordLength").disabled = false;
+    document.getElementById("wordLevel").disabled = false;
+
+    // disable all that would produce a zero-length word list.
+    // TO DO: Create one-time (on startup) function to govern this on loading the word list.
 }
 
 function updateWordPoolFiltered() {
@@ -200,9 +215,19 @@ function updateWordPoolFiltered() {
         }
     }
 
+    document.getElementById("divWordCount").innerHTML = "<p>There are " + wordPoolFiltered.length +
+        " words available for these selections.</p>";
+
     if (gameState === GAME_STATE.PENDING) {
         word = updateHangmanWord();
         drawHangmanWord();
+    } else {
+        if (confirm("Reset the game with a new word based on these options?\n\nClick 'Cancel' to finish this game " +
+                "first, having your changes apply to the next game.")) {
+            newGame();
+            dialogPreferences.style.display = "none";
+
+        }
     }
 }
 
@@ -213,7 +238,6 @@ function updateHangmanWord() {
 function randIntBetween(randMin, randMax) {
     return Math.floor(Math.random() * (randMax - randMin + 1) + randMin);
 }
-
 
 function drawHangmanWord() {
     if (!word) return;
@@ -233,11 +257,10 @@ function drawHangmanWord() {
     document.getElementById("divWord").innerHTML = wordDisplay;
 }
 
-
 function drawLetterTable() {
     if (!alphabetGuesses) return;
     var guessHTML = '<table>';
-    for (var i = 0; i < alphabet.length;) {    // Increment "i" only once per "j" number of letters. (So, not here.)
+    for (var i = 0; i < alphabet.length;) {    // Increment "i" only once per "j" number of letters (so, not here).
         guessHTML = guessHTML + '<tr>';
         for (var j = 0; j < letterDisplayColumns; j++) {
             if (i < alphabet.length) {
@@ -285,7 +308,6 @@ function handleGuess(theGuess) {
     // Change of game state can impact hangman, preferences state, guessed letters, and word display. So
     //   let each of these refresh itself.
     drawHangman();
-    updateEnabledState();
     drawLetterTable();
     drawHangmanWord();
 }
@@ -329,6 +351,7 @@ function getHangmanParts() {
     }
 
     if (gameState === GAME_STATE.LOST) {
+        // TO DO: Add Noose here.
         hangmanParts.push(HANGMAN_PART.LEFT_EYE_DEAD);
         hangmanParts.push(HANGMAN_PART.RIGHT_EYE_DEAD);
         hangmanParts.push(HANGMAN_PART.MOUTH_DEAD);
@@ -352,6 +375,7 @@ function getHangmanParts() {
 }
 
 function getHangmanDrawStep() {
+    // Identifies which multiple parts to draw when game difficulty is more difficult than default.
     if (gameState === GAME_STATE.WON || gameState === GAME_STATE.LOST) {
         return 10;
     } else if (maxMisses === 10) {
@@ -360,7 +384,7 @@ function getHangmanDrawStep() {
         if (missCount === 1) {
             return 2;
         }
-        else if (missCount === 2) {
+        else if (missCount === 2) {  // For example, when max misses is 7 and the user has missed two, we draw 4 body parts.
             return 4;
         }
         else if (missCount === 3) {
@@ -577,7 +601,6 @@ function updateStylesheet(selector, property, value) {
 
     theStylesheet.insertRule(selector + " { " + property + ": " + value + "; }", 0);
 }
-
 
 
 // Add support for keyboard-based control/input.
