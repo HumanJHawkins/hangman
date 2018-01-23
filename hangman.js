@@ -3,17 +3,17 @@
 var GAME_STATE = Object.freeze({
     "ERROR": 0,
     "PENDING": 1,
-    "PROGRESSING": 2,
-    "IMPERILED": 3,
+    "PROGRESSING": 2,   // Game in progress.
+    "IMPERILED": 3,     // Game in progress. Player in danger of losing. Triggers "worried" hangman graphic.
     "WON": 4,
     "LOST": 5
 });
 
 var HANGMAN_PART = Object.freeze({
     "FRAME": 1,
-    "GALLOWS": 2,
+    "GALLOWS": 2,   // TO DO: Implement draw of gallows.
     "ROPE": 3,
-    "NOOSE": 4,
+    "NOOSE": 4,     // TO DO: Implement draw of noose. Could be done on loss without changes to current drawing.
     "HEAD": 5,
     "NOSE": 6,
     "BODY": 7,
@@ -39,37 +39,24 @@ var HANGMAN_PART = Object.freeze({
     "MOUTH_DEAD": 27
 });
 
-var dialogPreferences = document.getElementById('preferences');
-var buttonPreferences = document.getElementById("btnPreferences");
-var buttonClosePreferences = document.getElementById("btnClosePreferences");
-
-var theCanvas = document.getElementById("hangmanCanvas");
-var theContext = theCanvas.getContext("2d");
-theCanvas.width = 400;
-theCanvas.height = 500;
-
-// document.getElementById('gameDifficulty').selectedIndex = 0;
-// document.getElementById('wordLevel').selectedIndex = 0;
-// document.getElementById('wordLength').selectedIndex = 0;
-
-var gameState;
 var theCanvas;
 var theContext;
-var windowHeight;   // Height and width to be stored in em.
+var gameState;
+var windowHeight;
 var windowWidth;
-var windowAspect;   // Is width/height ratio. Therefore, 1 indicates square. > 1 is wide. < 1 is tall.
-var emPixels;
+var windowAspect;                   // Is width/height ratio. Therefore, 1 indicates square. > 1 is wide. < 1 is tall.
+var emPixels;                       // Measure in pixels of one em unit.
 var letterDisplayColumns;
 var alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-var alphabetGuesses;
-var wordPool;
-var wordPoolFiltered;
+var alphabetGuesses;                // Letters guessed so far, inclusive of correct and incorrect.
+var wordPool;                       // Full word pool (Read in on first page load.)
+var wordPoolFiltered;               // Portion of word pool allowed by preference controls.
 var word;
-var hitCount;
+var hitCount;                       // Count of letters exposed. Not necessarily count of correct guesses.
 var missCount;
+var maxMisses;
 
-var maxMisses = 10;
-
+// Load the full word list.
 var vocabRequest = new XMLHttpRequest();
 vocabRequest.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 200) {
@@ -79,28 +66,100 @@ vocabRequest.onreadystatechange = function () {
 vocabRequest.open("GET", "hangmanVocab.json", false);
 vocabRequest.send();
 
+// Function declarations
+function newGame() {
+    hitCount = 0;
+    missCount = 0;
+    updateGameState();          // Will be "PENDING" if hitCount and missCount are 0.
+
+    // Initialize guesses to <nothing guessed yet>
+    alphabetGuesses = [];
+    for (var i = 0; i < alphabet.length; i++) {
+        alphabetGuesses.push(false);
+    }
+
+    handleDisplaySize();        // Requires defined alphabetGuesses, hitCount, misscount. Handles full screen draw.
+    updateMaxMisses();          // Operates based on game difficulty preference.
+    updateEnabledState();       // Requires preference controls created in handleDisplaySize.
+    updateWordPoolFiltered();   // Requires div created in handleDisplaySize. Also selects word and redraws if gameState pending.
+}
+
+function handleDisplaySize() {
+    // Measure the em unit in pixels.
+    document.getElementById("emPixelTest").style.height = "1em";
+    emPixels = document.getElementById("emPixelTest").offsetHeight;
+
+    // Window dimensions in pixels. Although we use view width for almost everything, most decisions about layout are
+    //   best made based on actual pixel count, or aspect ratio. See also:
+    //   https://docs.microsoft.com/en-us/windows/uwp/design/layout/screen-sizes-and-breakpoints-for-responsive-design
+    windowWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    windowAspect = windowWidth / windowHeight;
+
+    handleDisplayRefresh();
+}
+
+function handleDisplayRefresh() {
+    // Default to title centered in remaining space to right of left float canvas.
+    updateStylesheet("canvas", "float", "left");
+    updateStylesheet("canvas", "width", "33.333%");
+
+    // Formerly .62. See how .7 behaves.
+    if (windowAspect < .7) {        // Extreme tall (Galaxy S8, etc.
+        // Place title and button bar above canvas. Center so letter buttons and word go below.
+        updateStylesheet("canvas", "display", "block");
+        updateStylesheet("canvas", "margin", "0 auto");
+        updateStylesheet("canvas", "float", "none");
+        updateStylesheet("canvas", "width", "75%");
+        document.getElementById("entirePage").innerHTML =
+            "<div id=\"divButtonBar\" class=\"floatRight\">" +
+            "   <img src=\"hangmanImage/preferences.png\" onClick=\"dialogPreferences.style.display='block'\" class=\"iconButtonImage\"/>" +
+            "   <img src=\"hangmanImage/help.png\" class=\"iconButtonImage\"/>" +
+            "   <img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
+            "   <img src=\"hangmanImage/newGame.png\" onClick=\"resetGame()\" class=\"iconButtonImage\"/>" +
+            "</div>" +
+            "<div id=\"divTitle\"><h1>Hangman</h1></div>" +
+            "<div id=\"divCanvas\"><canvas id=\"hangmanCanvas\"></canvas></div>" +
+            "<div id=\"divLetters\"></div>" +
+            "<div id=\"divWord\"></div>";
+    } else {
+        // float canvas left and arrange for efficient use of space to right of canvas.
+        document.getElementById("entirePage").innerHTML =
+            "<div id=\"divCanvas\"><canvas id=\"hangmanCanvas\"></canvas></div>" +
+            "<div id=\"divButtonBar\" class=\"floatRight\">" +
+            "   <img src=\"hangmanImage/preferences.png\" onClick=\"dialogPreferences.style.display='block'\" class=\"iconButtonImage\"/>" +
+            "   <img src=\"hangmanImage/help.png\" class=\"iconButtonImage\"/>" +
+            "   <img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
+            "   <img src=\"hangmanImage/newGame.png\" onClick=\"resetGame()\" class=\"iconButtonImage\"/>" +
+            "</div>" +
+            "<div id=\"divTitle\"><h1>Hangman</h1></div>" +
+            "<div id=\"divLetters\"></div>" +
+            "<div id=\"divWord\"></div>";
+    }
+
+    theCanvas = document.getElementById("hangmanCanvas");
+    theContext = theCanvas.getContext("2d");
+    theCanvas.width = 400;
+    theCanvas.height = 500;
+
+    dialogPreferences = document.getElementById('preferences');
+    buttonPreferences = document.getElementById("btnPreferences");
+    buttonClosePreferences = document.getElementById("btnClosePreferences");
+
+    if (Math.max(document.documentElement.clientWidth, window.innerWidth || 0) > 1000) {
+        letterDisplayColumns = 13;
+    } else {
+        letterDisplayColumns = 9;
+    }
+
+    drawHangmanWord();
+    drawLetterTable();
+    drawHangman();
+}
 
 function updateMaxMisses() {
     maxMisses = parseInt(document.getElementById('gameDifficulty').value);
 }
-
-function initHangman() {
-    hitCount = 0;
-    missCount = 0;
-    updateGameState();          // Will be "PENDING" if hitCount and missCount are 0.
-    updateEnabledState();       // Controls will be enabled based on game state.
-
-    alphabetGuesses = [];
-    for (var i = 0; i < alphabet.length; i++) {     // Initialize guesses to <nothing guessed yet>
-        alphabetGuesses.push(false);
-    }
-
-    updateWordPoolFiltered();   // Also selects word and redraws if at gameState PENDING (i.e As here).
-    setTimeout(function () {
-        updateWindowSize();
-    }, 1000);
-}
-
 
 function updateGameState() {
     if (hitCount + missCount === 0 || word === undefined) {
@@ -155,47 +214,6 @@ function randIntBetween(randMin, randMax) {
     return Math.floor(Math.random() * (randMax - randMin + 1) + randMin);
 }
 
-function updateWindowSize() {
-    document.getElementById("emPixelTest").style.height = "1em";
-    emPixels = document.getElementById("emPixelTest").offsetHeight;
-
-    // Window dimensions available in pixels
-    windowWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-
-    // Convert to Ems.
-    windowWidth = windowWidth / emPixels;
-    windowHeight = windowHeight / emPixels;
-
-    windowAspect = windowWidth / windowHeight;
-
-    fullRecalcRedraw();
-}
-
-function fullRecalcRedraw() {
-    // Default to title centered in remaining space to right of left float canvas.
-    updateStylesheet("canvas", "float", "left");
-    updateStylesheet("canvas", "width", "33.333%");
-
-    if (windowAspect < .62) {       // Extreme tall (Galaxy S8, etc.)
-        // Move title above canvas and center all.
-        // document.getElementByID("titleAndCanvas").innerHTML = "<h1>Hangman</h1><canvas id=\"hangmanCanvas\"></canvas>";
-        updateStylesheet("canvas", "display", "block");
-        updateStylesheet("canvas", "margin", "0 auto");
-        updateStylesheet("canvas", "float", "none");
-        updateStylesheet("canvas", "width", "75%");
-    }
-
-    if (Math.max(document.documentElement.clientWidth, window.innerWidth || 0) > 1000) {
-        letterDisplayColumns = 13;
-    } else {
-        letterDisplayColumns = 9;
-    }
-
-    drawHangmanWord();  // Probably not necessary. Included for simplicity.
-    drawLetterTable();
-    drawHangman();
-}
 
 function drawHangmanWord() {
     if (!word) return;
@@ -542,7 +560,7 @@ function resetGame() {
     if (reset) {
         // Don't reload the page. That would wipe preferences.
         gameState = GAME_STATE.PENDING;
-        initHangman();
+        newGame();
     }
 }
 
@@ -572,16 +590,8 @@ addEventListener('keydown', function (event) {
 });
 
 addEventListener('resize', function () {
-    updateWindowSize();
+    handleDisplaySize();
 });
-
-buttonPreferences.onclick = function () {
-    dialogPreferences.style.display = "block";
-};
-
-buttonClosePreferences.onclick = function () {
-    dialogPreferences.style.display = "none";
-};
 
 // When the user clicks anywhere outside of the dialogPreferences, close it
 window.onclick = function (event) {
@@ -590,5 +600,3 @@ window.onclick = function (event) {
     }
 };
 
-
-updateMaxMisses();
