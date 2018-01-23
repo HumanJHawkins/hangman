@@ -165,9 +165,7 @@ function updateMaxMisses() {
             maxMisses = parseInt(document.getElementById('gameDifficulty').value);
             updateGameState();
 
-            drawHangman();
-            drawLetterTable();
-            drawHangmanWord();
+            handleDisplayRefresh();
             return;
         } else {
             return;
@@ -307,9 +305,7 @@ function handleGuess(theGuess) {
 
     // Change of game state can impact hangman, preferences state, guessed letters, and word display. So
     //   let each of these refresh itself.
-    drawHangman();
-    drawLetterTable();
-    drawHangmanWord();
+    handleDisplayRefresh();
 }
 
 function drawHangman() {
