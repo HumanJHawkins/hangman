@@ -87,8 +87,7 @@ function newGame() {
 
 function handleDisplaySize() {
     // Window dimensions in pixels. Although we use view width for almost everything, most decisions about layout are
-    //   best made based on actual pixel count, or aspect ratio. See also:
-    //   https://docs.microsoft.com/en-us/windows/uwp/design/layout/screen-sizes-and-breakpoints-for-responsive-design
+    //   best made based on actual pixel count, or aspect ratio.
     windowWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
@@ -98,12 +97,16 @@ function handleDisplaySize() {
 function handleDisplayRefresh() {
    // The letter table and word minimally occupies about 60% of width in horizontal layout and 50% of height in
     // vertical layout. Therefore, optimal layout depends on the ratio of 50% height / 60% width.
-    if ((windowHeight * 0.5) / (windowWidth * .6) > 1) {
+    //
+    // Once basic layout is determined, we can tweak it based on actual screen size, within the scope of the overall
+    // layout. See also:
+    //   https://docs.microsoft.com/en-us/windows/uwp/design/layout/screen-sizes-and-breakpoints-for-responsive-design
+    var useTallLayout = (windowHeight * 0.5) / (windowWidth * .6) > 1;
+
+    if (useTallLayout) {
         // Tall Layout
         updateStylesheet("canvas", "float", "none");
-        updateStylesheet("canvas", "width", "60vw");
         updateStylesheet("canvas", "margin-right", "0vw");
-
         document.getElementById("entirePage").innerHTML =
             "<h1>Hangman" +
                 "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
@@ -119,11 +122,8 @@ function handleDisplayRefresh() {
             "<div id=\"divWord\"></div>";
     } else {
         // Wide Layout
-        // float canvas left and arrange for efficient use of space to right of canvas.
         updateStylesheet("canvas", "float", "left");
-        updateStylesheet("canvas", "width", "32vw");
         updateStylesheet("canvas", "margin-right", "2vw");
-
         document.getElementById("entirePage").innerHTML =
             "<div id=\"divCanvas\"><canvas id=\"hangmanCanvas\"></canvas></div>" +
             "<div id=\"divNonCanvas\">" +
@@ -139,14 +139,31 @@ function handleDisplayRefresh() {
                 "<div id=\"divLetters\"></div>" +
             "</div>" +
             "<div id=\"divWord\"></div>";
-        // updateStylesheet("#divNonCanvas", "margin-left", "34vw");
-        // updateStylesheet("#divNonCanvas", "text-align", "center");
     }
 
+    // Create canvas in new divs before continuing
     theCanvas = document.getElementById("hangmanCanvas");
     theContext = theCanvas.getContext("2d");
     theCanvas.width = 400;
     theCanvas.height = 500;
+    var canvasWidthHeightRatio = theCanvas.width / theCanvas.height;
+    var canvasHeightWidthRatio = theCanvas.height / theCanvas.width;
+
+    if (useTallLayout) {
+        // If tall, set height up to 50%, as long as width fits the visible page.
+        var idealHeight = windowHeight * 0.5;
+        var maxHeight = windowWidth * canvasHeightWidthRatio;
+        var height = (idealHeight <= maxHeight) ? idealHeight : maxHeight;
+        updateStylesheet("canvas", "width", "inherit");
+        updateStylesheet("canvas", "height", height + "px");
+    } else {
+        // If wide, set width up to 32%, as long as height fits the visible page.
+        var idealWidth = windowWidth * 0.32;
+        var maxWidth = windowHeight * canvasWidthHeightRatio;
+        var width = (idealWidth <= maxWidth) ? idealWidth : maxWidth;
+        updateStylesheet("canvas", "width", width + "px");
+        updateStylesheet("canvas", "height", "inherit");
+    }
 
     dialogPreferences = document.getElementById('preferences');
     buttonPreferences = document.getElementById("btnPreferences");
