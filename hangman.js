@@ -44,8 +44,9 @@ var theContext;
 var gameState;
 var windowHeight;
 var windowWidth;
-var windowAspect;                   // Is width/height ratio. Therefore, 1 indicates square. > 1 is wide. < 1 is tall.
-var emPixels;                       // Measure in pixels of one em unit.
+var dialogPreferences;
+var buttonPreferences;
+var buttonClosePreferences;
 var letterDisplayColumns;
 var alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 var alphabetGuesses;                // Letters guessed so far, inclusive of correct and incorrect.
@@ -90,47 +91,56 @@ function handleDisplaySize() {
     //   https://docs.microsoft.com/en-us/windows/uwp/design/layout/screen-sizes-and-breakpoints-for-responsive-design
     windowWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-    windowAspect = windowWidth / windowHeight;
 
     handleDisplayRefresh();
 }
 
 function handleDisplayRefresh() {
-    // Default to title centered in remaining space to right of left float canvas.
-    updateStylesheet("canvas", "float", "left");
-    updateStylesheet("canvas", "width", "33.333%");
-
-    if (windowAspect < .75) {
-        // Extreme tall (Galaxy S8, etc.) Place title and button bar above canvas. Center so letter buttons and word go below.
-        updateStylesheet("canvas", "display", "block");
-        updateStylesheet("canvas", "margin", "0 auto");
+   // The letter table and word minimally occupies about 60% of width in horizontal layout and 50% of height in
+    // vertical layout. Therefore, optimal layout depends on the ratio of 50% height / 60% width.
+    if ((windowHeight * 0.5) / (windowWidth * .6) > 1) {
+        // Tall Layout
         updateStylesheet("canvas", "float", "none");
-        updateStylesheet("canvas", "width", "80%");
-        updateStylesheet("canvas", "padding-bottom", "1vw");
+        updateStylesheet("canvas", "width", "60vw");
+        updateStylesheet("canvas", "margin-right", "0vw");
+
         document.getElementById("entirePage").innerHTML =
-            "<div id=\"divButtonBar\" class=\"floatRight\">" +
-            "   <img src=\"hangmanImage/preferences.png\" onClick=\"showPreferences()\" class=\"iconButtonImage\"/>" +
-            "   <img src=\"hangmanImage/help.png\" class=\"iconButtonImage\"/>" +
-            "   <img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
-            "   <img src=\"hangmanImage/newGame.png\" onClick=\"resetGame()\" class=\"iconButtonImage\"/>" +
-            "</div>" +
-            "<div id=\"divTitle\"><h1>Hangman</h1></div>" +
+            "<h1>Hangman" +
+                "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
+                "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
+                "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
+                "<img src=\"hangmanImage/preferences.png\" onClick=\"showPreferences()\" class=\"iconButtonImage\"/>" +
+                "<img src=\"hangmanImage/help.png\" class=\"iconButtonImage\"/>" +
+                "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
+                "<img src=\"hangmanImage/newGame.png\" onClick=\"resetGame()\" class=\"iconButtonImage\"/>" +
+            "</h1>" +
             "<div id=\"divCanvas\"><canvas id=\"hangmanCanvas\"></canvas></div>" +
             "<div id=\"divLetters\"></div>" +
             "<div id=\"divWord\"></div>";
     } else {
+        // Wide Layout
         // float canvas left and arrange for efficient use of space to right of canvas.
+        updateStylesheet("canvas", "float", "left");
+        updateStylesheet("canvas", "width", "32vw");
+        updateStylesheet("canvas", "margin-right", "2vw");
+
         document.getElementById("entirePage").innerHTML =
             "<div id=\"divCanvas\"><canvas id=\"hangmanCanvas\"></canvas></div>" +
-            "<div id=\"divButtonBar\" class=\"floatRight\">" +
-            "   <img src=\"hangmanImage/preferences.png\" onClick=\"showPreferences()\" class=\"iconButtonImage\"/>" +
-            "   <img src=\"hangmanImage/help.png\" class=\"iconButtonImage\"/>" +
-            "   <img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
-            "   <img src=\"hangmanImage/newGame.png\" onClick=\"resetGame()\" class=\"iconButtonImage\"/>" +
+            "<div id=\"divNonCanvas\">" +
+                "<h1>Hangman" +
+                    "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
+                    "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
+                    "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
+                    "<img src=\"hangmanImage/preferences.png\" onClick=\"showPreferences()\" class=\"iconButtonImage\"/>" +
+                    "<img src=\"hangmanImage/help.png\" class=\"iconButtonImage\"/>" +
+                    "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
+                    "<img src=\"hangmanImage/newGame.png\" onClick=\"resetGame()\" class=\"iconButtonImage\"/>" +
+                "</h1>" +
+                "<div id=\"divLetters\"></div>" +
             "</div>" +
-            "<div id=\"divTitle\"><h1>Hangman</h1></div>" +
-            "<div id=\"divLetters\"></div>" +
             "<div id=\"divWord\"></div>";
+        // updateStylesheet("#divNonCanvas", "margin-left", "34vw");
+        // updateStylesheet("#divNonCanvas", "text-align", "center");
     }
 
     theCanvas = document.getElementById("hangmanCanvas");
@@ -164,7 +174,6 @@ function updateMaxMisses() {
             dialogPreferences.style.display = "none";
             maxMisses = parseInt(document.getElementById('gameDifficulty').value);
             updateGameState();
-
             handleDisplayRefresh();
             return;
         } else {
@@ -614,7 +623,7 @@ addEventListener('resize', function () {
 
 // When the user clicks anywhere outside of the dialogPreferences, close it
 window.onclick = function (event) {
-    if (event.target == dialogPreferences) {
+    if (event.target === dialogPreferences) {
         dialogPreferences.style.display = "none";
     }
 };

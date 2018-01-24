@@ -1,29 +1,38 @@
 
-body, select {
-    text-align: left;
+body {
+    text-align: center;
     font-family: sans-serif;
-    font-size: calc(8px + 1vw); /* Results in 1vw with minimum of 3px */
-    margin-bottom: 0;
-    margin-top: 0;
+    font-size: calc(4px + .5vw); /* Results in .5vw with minimum of 4px */
+    margin: 2vw;
 }
 
 h1 {
     font-family: "Courier New", "Courier", monospaced, serif;
-    font-size: calc(12px + 5vw);
-    margin-bottom: 2vw;
+    font-size: calc(6px + 4vw);
+    margin: 0;
+    margin-top: -1vw;
+    margin-bottom: 1vw;
+}
+
+canvas {
+    float: left;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    margin-top: 1vw;
 }
 
 table {
     table-layout: fixed;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 0px;
+    margin: 0;
+    margin-bottom: 2vw;
+    padding: 0;
 }
 
 td {
     width: 1%;
     height: 1%;
-    padding: 0px;
+    padding: 0;
 }
 
 .hangmanWord {
@@ -31,8 +40,8 @@ td {
     letter-spacing: .5vw;
     font-size: calc(12px + 8vw);
     text-align: center;
-    margin-bottom: 0;
-    margin-top: 2vw;
+    margin: 2vw;
+    margin-top: -2vw;
 }
 
 .missedLetter {
@@ -44,20 +53,26 @@ td {
     font-size: calc(8px + 3vw);
     width: 100%;
     text-align: center;
-    padding: 0px;
+    padding: 0;
 }
 
-canvas {
-    float: left;
-    width: 100%;
-    height: 100%;
+select {
+    text-align: left;
+    font-family: sans-serif;
+    font-size: calc(4px + .5vw);
+    margin: 0;
 }
 
 .preferenceText {
-    font-family: "Courier New", "Courier", monospaced, serif;
-    font-size: calc(8px + 1vw); /* Results in 1vw with minimum of 3px */
-    white-space: nowrap;
     text-align: left;
+    font-family: "Courier New", "Courier", monospaced, serif;
+    font-size: calc(4px + .5vw);
+    margin: 0;
+}
+
+.preferenceLabel {
+    white-space: nowrap;
+    overflow:scroll;
 }
 
 .spaceBelow {
@@ -79,6 +94,7 @@ canvas {
 }
 
 .modal-content {
+    text-align: left;
     background-color: #fefefe;
     margin: auto;
     padding: 1vw;
@@ -91,7 +107,6 @@ canvas {
     float: right;
     font-size: calc(12px + 5vw);
     font-weight: bold;
-    /* padding-top: -100px; */
     position: relative;
     top: -1.7vw;
     left: .5vw;
@@ -110,16 +125,21 @@ canvas {
 
 .iconButtonImage {
     width: 3vw;
-    min-width: 16px;
-    min-height: 16px;
-    padding: 0px;
-    position: relative;
-    top: 2.5vw;
+    min-width: 8px;
+    min-height: 8px;
+    padding: 0;
+    border-color: transparent;  /* Transparent non-hover border prevents shifting icons on hover.  */
+    border-width: thin;
+    border-style: solid;
+}
+.iconButtonImage:hover {
+    background-color: lightgray;
+    border-color: black;
 }
 
 .iconButtonSpacer {
     width: 1.5vw;
-    min-width: 8px;
-    min-height: 8px;
-    padding: 0px;
+    min-width: 4px;
+    min-height: 4px;
+    padding: 0;
 }

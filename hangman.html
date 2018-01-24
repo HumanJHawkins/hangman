@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="hangman.css" />
+    <link rel="stylesheet" type="text/css" href="hangman.css"/>
     <script type="text/javascript" src="hangman.js" async></script>
     <title>Hangman</title>
 </head>
@@ -13,36 +13,38 @@
     <div id="divPreferenceDialog" class="modal-content">
         <div id="btnClosePreferences" class="modalClose" onClick="dialogPreferences.style.display='none'">&times;</div>
         <h3>Preferences: </h3>
-        <form>
-            <!-- Select control for low and high character length of potential words -->
-            <span class="preferenceText"><label for="wordLength">Word Length:</label>
-                <select id="wordLength" onChange="updateWordPoolFiltered()">
-                    <option value="{&quot;low&quot;: 4, &quot;high&quot;: 10}">Normal</option>
-                    <option value="{&quot;low&quot;: 2, &quot;high&quot;: 3}">Short</option>
-                    <option value="{&quot;low&quot;: 4, &quot;high&quot;: 6}">Medium</option>
-                    <option value="{&quot;low&quot;: 7, &quot;high&quot;: 12}">Long</option>
-                </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            </span>
-            <!-- Select control for low and high grade level of potential words -->
-            <span class="preferenceText"><label for="wordLevel">Word Level:&nbsp;</label>
-                <select id="wordLevel" onChange="updateWordPoolFiltered()">
-                    <option value="{&quot;low&quot;: 2, &quot;high&quot;: 12}">Normal</option>
-                    <option value="{&quot;low&quot;: -1, &quot;high&quot;: 1}">Beginning Readers</option>
-                    <option value="{&quot;low&quot;: 2, &quot;high&quot;: 5}">Elementary</option>
-                    <option value="{&quot;low&quot;: 6, &quot;high&quot;: 8}">Middle School</option>
-                    <option value="{&quot;low&quot;: 9, &quot;high&quot;: 12}">High School</option>
-                </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            </span>
-            <!-- Select control for number of incorrect guesses before loss.  -->
-            <span class="preferenceText"><label for="gameDifficulty">Difficulty:&nbsp;</label>
-            <select class="spaceBelow" id="gameDifficulty" onChange="updateMaxMisses()">
-                <option value="10">Normal</option>
-                <option value="7">Hard</option>
-                <option value="5">Epic</option>
-                <option value="3">Stupid</option>
-            </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            </span>
-        </form>
+        <span class="preferenceText">
+
+                <!-- Select control for low and high character length of potential words -->
+                <span class="preferenceLabel"><label for="wordLength">Word&nbsp;Length:&nbsp;</label>
+                    <select id="wordLength" onChange="updateWordPoolFiltered()">
+                        <option value="{&quot;low&quot;: 4, &quot;high&quot;: 10}">Normal</option>
+                        <option value="{&quot;low&quot;: 2, &quot;high&quot;: 3}">Short</option>
+                        <option value="{&quot;low&quot;: 4, &quot;high&quot;: 6}">Medium</option>
+                        <option value="{&quot;low&quot;: 7, &quot;high&quot;: 12}">Long</option>
+                    </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </span>
+                <!-- Select control for low and high grade level of potential words -->
+                <span class="preferenceLabel"><label for="wordLevel">Word&nbsp;Level:&nbsp;&nbsp;</label>
+                    <select id="wordLevel" onChange="updateWordPoolFiltered()">
+                        <option value="{&quot;low&quot;: 2, &quot;high&quot;: 12}">Normal</option>
+                        <option value="{&quot;low&quot;: -1, &quot;high&quot;: 1}">Beginning Readers</option>
+                        <option value="{&quot;low&quot;: 2, &quot;high&quot;: 5}">Elementary</option>
+                        <option value="{&quot;low&quot;: 6, &quot;high&quot;: 8}">Middle School</option>
+                        <option value="{&quot;low&quot;: 9, &quot;high&quot;: 12}">High School</option>
+                    </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </span>
+                <!-- Select control for number of incorrect guesses before loss.  -->
+                <span class="preferenceLabel"><label for="gameDifficulty">Difficulty:&nbsp;&nbsp;</label>
+                    <select class="spaceBelow" id="gameDifficulty" onChange="updateMaxMisses()">
+                        <option value="10">Normal</option>
+                        <option value="7">Hard</option>
+                        <option value="5">Epic</option>
+                        <option value="3">Stupid</option>
+                    </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </span>
+
+        </span>
         <div id="divWordCount"></div>
     </div>
 </div>
