@@ -159,7 +159,7 @@ function handleDisplayRefresh() {
     } else {
         // If wide, set width up to 32%, as long as height fits the visible page.
         var idealWidth = windowWidth * 0.32;
-        var maxWidth = windowHeight * canvasWidthHeightRatio;
+        var maxWidth = (windowHeight * .92) * canvasWidthHeightRatio; // *.92 to accomodate margins
         var width = (idealWidth <= maxWidth) ? idealWidth : maxWidth;
         updateStylesheet("canvas", "width", width + "px");
         updateStylesheet("canvas", "height", "inherit");
