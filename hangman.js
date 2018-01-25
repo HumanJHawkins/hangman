@@ -47,6 +47,9 @@ var windowWidth;
 var dialogPreferences;
 var buttonPreferences;
 var buttonClosePreferences;
+var dialogHelp;
+var buttonHelp;
+var buttonCloseHelp;
 var letterDisplayColumns;
 var alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 var alphabetGuesses;                // Letters guessed so far, inclusive of correct and incorrect.
@@ -113,7 +116,7 @@ function handleDisplayRefresh() {
                 "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
                 "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
                 "<img src=\"hangmanImage/preferences.png\" onClick=\"showPreferences()\" class=\"iconButtonImage\"/>" +
-                "<img src=\"hangmanImage/help.png\" class=\"iconButtonImage\"/>" +
+            "<img src=\"hangmanImage/help.png\" onClick=\"showHelp()\" class=\"iconButtonImage\"/>" +
                 "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
                 "<img src=\"hangmanImage/newGame.png\" onClick=\"resetGame()\" class=\"iconButtonImage\"/>" +
             "</h1>" +
@@ -132,7 +135,7 @@ function handleDisplayRefresh() {
                     "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
                     "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
                     "<img src=\"hangmanImage/preferences.png\" onClick=\"showPreferences()\" class=\"iconButtonImage\"/>" +
-                    "<img src=\"hangmanImage/help.png\" class=\"iconButtonImage\"/>" +
+            "<img src=\"hangmanImage/help.png\" onClick=\"showHelp()\" class=\"iconButtonImage\"/>" +
                     "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
                     "<img src=\"hangmanImage/newGame.png\" onClick=\"resetGame()\" class=\"iconButtonImage\"/>" +
                 "</h1>" +
@@ -168,6 +171,9 @@ function handleDisplayRefresh() {
     dialogPreferences = document.getElementById('preferences');
     buttonPreferences = document.getElementById("btnPreferences");
     buttonClosePreferences = document.getElementById("btnClosePreferences");
+    dialogHelp = document.getElementById('help');
+    buttonHelp = document.getElementById("btnHelp");
+    buttonCloseHelp = document.getElementById("btnCloseHelp");
 
     if (Math.max(document.documentElement.clientWidth, window.innerWidth || 0) > 1000) {
         letterDisplayColumns = 13;
@@ -183,6 +189,11 @@ function handleDisplayRefresh() {
 function showPreferences() {
     dialogPreferences.style.display = 'block';
 }
+
+function showHelp() {
+    dialogHelp.style.display = 'block';
+}
+
 function updateMaxMisses() {
     if (gameState === GAME_STATE.PROGRESSING || gameState === GAME_STATE.IMPERILED) {
         if (confirm("Apply this difficulty change to the current game?\n\nClick 'Cancel' to finish this game " +
@@ -271,7 +282,7 @@ function drawHangmanWord() {
             wordDisplay = wordDisplay + word.charAt(i);
         } else {
             if (gameState === GAME_STATE.LOST) {  // Unmask hidden letters on loss.
-                wordDisplay = wordDisplay + '<buttonClosePreferences class = "missedLetter">' + word.charAt(i) + "</buttonClosePreferences>";
+                wordDisplay = wordDisplay + '<span class = "missedLetter">' + word.charAt(i) + "</span>";
             } else {
                 wordDisplay = wordDisplay + '_';
             }
@@ -635,7 +646,6 @@ function updateStylesheet(selector, property, value) {
             return;
         }
     }
-
     theStylesheet.insertRule(selector + " { " + property + ": " + value + "; }", 0);
 }
 
@@ -653,10 +663,13 @@ addEventListener('resize', function () {
     handleDisplaySize();
 });
 
-// When the user clicks anywhere outside of the dialogPreferences, close it
 window.onclick = function (event) {
+    // When the user clicks anywhere outside of the dialogPreferences, close it
     if (event.target === dialogPreferences) {
         dialogPreferences.style.display = "none";
     }
+    // Or help window
+    if (event.target === dialogHelp) {
+        dialogHelp.style.display = "none";
+    }
 };
-

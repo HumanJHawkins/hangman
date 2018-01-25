@@ -1,4 +1,4 @@
-
+/* Dimensions consolidate as: top right bottom left. */
 body {
     text-align: center;
     font-family: sans-serif;
@@ -10,24 +10,26 @@ body {
 h1 {
     font-family: "Courier New", "Courier", monospaced, serif;
     font-size: calc(6px + 4vw);
+    margin: -1vw 0 1vw 0;
+}
+
+h3 {
+    font-family: "Courier New", "Courier", monospaced, serif;
+    font-size: calc(6px + 1vw);
     margin: 0;
-    margin-top: -1vw;
-    margin-bottom: 1vw;
 }
 
 canvas {
     float: left;
     width: inherit;
     height: inherit;
-    margin: 0;
-    margin-top: 1vw;
+    margin: 1vw 0 0 0;
     background-color: #e8e8e8;
 }
 
 table {
     table-layout: fixed;
-    margin: 0;
-    margin-bottom: 2vw;
+    margin: 0 0 8vw 0; /* TO DO: Research/Analyze. Bottom not fully working, but has some partial effect. (???)  */
     padding: 0;
 }
 
@@ -43,8 +45,7 @@ td {
     font-size: calc(12px + 8vw);
     font-weight: 500;
     text-align: center;
-    margin: 2vw;
-    margin-top: -2vw;
+    margin: -2vw 2vw 2vw 2vw;
     color: darkgreen;
 }
 
@@ -75,25 +76,37 @@ td {
 
 select {
     text-align: left;
-    font-family: sans-serif;
+    font-family: "Courier New", "Courier", monospaced, serif;
     font-size: calc(4px + .5vw);
-    margin: 0;
+    margin: 1vw auto auto auto;
+}
+
+.helpText {
+    text-align: left;
+    font-family: sans-serif;
+    font-size: calc(6px + .75vw);
+    margin: 1vw auto auto auto;
 }
 
 .preferenceText {
     text-align: left;
     font-family: "Courier New", "Courier", monospaced, serif;
-    font-size: calc(4px + .5vw);
-    margin: 0;
+    font-size: calc(6px + .75vw);
+    margin: 1vw auto auto auto;
+}
+
+.preferenceHeading {
+    font-weight: bold;
+    font-size: calc(6px + 1vw);
 }
 
 .preferenceLabel {
     white-space: nowrap;
-    overflow:scroll;
+    overflow: scroll;
 }
 
-.spaceBelow {
-    margin-bottom: 2vw;
+.indent {
+    margin-left: 2vw;
 }
 
 .modal {
@@ -136,18 +149,12 @@ select {
     cursor: pointer;
 }
 
-.floatRight {
-    float: right;
-}
-
 .iconButtonImage {
     width: 3vw;
     min-width: 8px;
     min-height: 8px;
     padding: 0;
-    border-color: transparent;  /* Transparent non-hover border prevents shifting icons on hover.  */
-    border-width: thin;
-    border-style: solid;
+    border: thin solid transparent; /* Transparent non-hover border prevents shifting icons on hover.  */
 }
 .iconButtonImage:hover {
     background-color: lightgray;

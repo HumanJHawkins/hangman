@@ -12,20 +12,20 @@
 <div id="preferences" class="modal">
     <div id="divPreferenceDialog" class="modal-content">
         <div id="btnClosePreferences" class="modalClose" onClick="dialogPreferences.style.display='none'">&times;</div>
-        <h3>Preferences: </h3>
-        <span class="preferenceText">
-
+        <h3 class="preferenceText preferenceHeading">Preferences: </h3>
+        <p class="indent">
+            <span class="preferenceText">
                 <!-- Select control for low and high character length of potential words -->
-                <span class="preferenceLabel"><label for="wordLength">Word&nbsp;Length:&nbsp;</label>
+                <span class="preferenceText preferenceLabel"><label for="wordLength">Word&nbsp;Length:&nbsp;</label>
                     <select id="wordLength" onChange="updateWordPoolFiltered()">
-                        <option value="{&quot;low&quot;: 4, &quot;high&quot;: 10}">Normal</option>
+                        <option value="{&quot;low&quot;: 4, &quot;high&quot;: 10}">Normal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
                         <option value="{&quot;low&quot;: 2, &quot;high&quot;: 3}">Short</option>
                         <option value="{&quot;low&quot;: 4, &quot;high&quot;: 6}">Medium</option>
                         <option value="{&quot;low&quot;: 7, &quot;high&quot;: 12}">Long</option>
                     </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </span>
                 <!-- Select control for low and high grade level of potential words -->
-                <span class="preferenceLabel"><label for="wordLevel">Word&nbsp;Level:&nbsp;&nbsp;</label>
+                <span class="preferenceText preferenceLabel"><label for="wordLevel">Word&nbsp;Level:&nbsp;&nbsp;</label>
                     <select id="wordLevel" onChange="updateWordPoolFiltered()">
                         <option value="{&quot;low&quot;: 2, &quot;high&quot;: 12}">Normal</option>
                         <option value="{&quot;low&quot;: -1, &quot;high&quot;: 1}">Beginning Readers</option>
@@ -35,17 +35,42 @@
                     </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </span>
                 <!-- Select control for number of incorrect guesses before loss.  -->
-                <span class="preferenceLabel"><label for="gameDifficulty">Difficulty:&nbsp;&nbsp;</label>
-                    <select class="spaceBelow" id="gameDifficulty" onChange="updateMaxMisses()">
-                        <option value="10">Normal</option>
+                <span class="preferenceText preferenceLabel"><label for="gameDifficulty">Difficulty:&nbsp;&nbsp;</label>
+                    <select id="gameDifficulty" onChange="updateMaxMisses()">
+                        <option value="10">Normal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
                         <option value="7">Hard</option>
                         <option value="5">Epic</option>
                         <option value="3">Stupid</option>
                     </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </span>
+            </span>
+        </p>
+        <p>&nbsp;</p>
+        <div id="divWordCount" class="preferenceText indent"></div>
+    </div>
+</div>
 
-        </span>
-        <div id="divWordCount"></div>
+<!-- Modal help dialog. Hidden while not in use. -->
+<div id="help" class="modal">
+    <div id="divHelpDialog" class="modal-content">
+        <div id="btnCloseHelp" class="modalClose" onClick="dialogHelp.style.display='none'">&times;</div>
+        <h3 class="preferenceText preferenceHeading">Help! </h3>
+        <p class="indent helpText">
+            Hangman is a traditional word guessing / spelling game that
+            <a href="https://en.wikipedia.org/wiki/Hangman_(game)" target="_blank">appears to have originated</a> during
+            the 1800's. The objective is to guess the letters of an obscured word. Correct guesses are shown, whereas
+            incorrect guesses cause parts of a person to be drawn into a gallows. If the word is guessed fully before
+            the man is completed, the game is won. If the person id drawn before the word is guessed, the game is lost.
+        </p>
+        <p class="indent helpText">
+            Guesses can be made by pressing keys on the keyboard while the game window is active, or by selecting
+            (clicking or touching) letters in the letter table on screen. Difficulty settings affect the number of
+            guesses before the person is fully drawn. Word level and word length options filter the words that can be
+            selected.
+        </p>
+        <p class="indent helpText">
+            Good luck!
+        </p>
     </div>
 </div>
 
