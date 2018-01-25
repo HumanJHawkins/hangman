@@ -467,7 +467,7 @@ function drawHangmanPart(thePart) {
         winOffset = 0;
     }
 
-    var left = 10;
+    var left = 0;
     var right = theCanvas.width - left;
     var top = 0;
     var bottom = theCanvas.height - top;
