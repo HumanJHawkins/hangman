@@ -288,12 +288,27 @@ function drawLetterTable() {
         guessHTML = guessHTML + '<tr>';
         for (var j = 0; j < letterDisplayColumns; j++) {
             if (i < alphabet.length) {
-                if (alphabetGuesses[i] || gameState > GAME_STATE.IMPERILED) {
-                    guessHTML = guessHTML + '<td><button class="letterBtn" disabled>' +
-                        alphabet.charAt(i) + '</button></td>';
+                if (alphabetGuesses[i]) {
+                    if(word.indexOf(alphabet.charAt(i)) > -1) {
+                        guessHTML = guessHTML + '<td><button class="letterBtn letterBtnHit" disabled>' +
+                            alphabet.charAt(i) + '</button></td>';
+                    } else {
+                        guessHTML = guessHTML + '<td><button class="letterBtn letterBtnMiss" disabled>' +
+                            alphabet.charAt(i) + '</button></td>';
+                    }
                 } else {
-                    guessHTML = guessHTML + '<td><button class="letterBtn" onClick="handleGuess(\'' + alphabet.charAt(i) +
-                        '\')">' + alphabet.charAt(i) + '</button></td>';
+                    if(gameState === GAME_STATE.LOST) {
+                        if(word.indexOf(alphabet.charAt(i)) > -1) {
+                            guessHTML = guessHTML + '<td><button class="letterBtn letterBtnActive" disabled>' +
+                                alphabet.charAt(i) + '</button></td>';
+                        } else {
+                            guessHTML = guessHTML + '<td><button class="letterBtn" disabled>' +
+                                alphabet.charAt(i) + '</button></td>';
+                        }
+                    } else {
+                        guessHTML = guessHTML + '<td><button class="letterBtn" onClick="handleGuess(\'' + alphabet.charAt(i) +
+                            '\')">' + alphabet.charAt(i) + '</button></td>';
+                    }
                 }
             } else {
                 guessHTML = guessHTML + '<td></td>';
