@@ -46,11 +46,13 @@ td {
     font-weight: 500;
     text-align: center;
     margin: -2vw 2vw 2vw 2vw;
-    color: darkgreen;
+    /* color: darkgreen;                /*  Original */
+    color: #759B67;                     /*  Alternate Green: #B9CE2B    */
 }
 
 .missedLetter {
-    color: darkred;
+    /* color: darkred;                  /*  Original */
+    color: #A82E5D;                     /*  Alternate Red: #914318      */
 }
 
 .letterBtn {
@@ -63,15 +65,21 @@ td {
 
 }
 .letterBtnActive {
-    background-color: lightcyan;
+    /* background-color: lightcyan;     /*  Original */
+    background-color: #5EBFB6;          /*  Alternate Blue: #1B8996 or #0BA3D2   */
+    color: black;
 }
 
 .letterBtnHit {
-    background-color: darkgreen;
+    /* background-color: darkgreen;      /*  Original */
+    background-color: #759B67;           /*  Alternate Green: #B9CE2B    */
+    color: black;
 }
 
 .letterBtnMiss {
-    background-color: darkred;
+    /* background-color: darkred;       /*  Original */
+    background-color: #A82E5D;          /*  Alternate Red: #914318      */
+    color: white;
 }
 
 select {
