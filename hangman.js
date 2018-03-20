@@ -1,4 +1,3 @@
-
 // Initialize global constants/statics. Load word list, etc.
 var GAME_STATE = Object.freeze({
     "ERROR": 0,
@@ -50,6 +49,9 @@ var buttonClosePreferences;
 var dialogHelp;
 var buttonHelp;
 var buttonCloseHelp;
+var dialogAbout;
+var buttonAbout;
+var buttonCloseAbout;
 var letterDisplayColumns;
 var alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 var alphabetGuesses;                // Letters guessed so far, inclusive of correct and incorrect.
@@ -98,7 +100,7 @@ function handleDisplaySize() {
 }
 
 function handleDisplayRefresh() {
-   // The letter table and word minimally occupies about 60% of width in horizontal layout and 50% of height in
+    // The letter table and word minimally occupies about 60% of width in horizontal layout and 50% of height in
     // vertical layout. Therefore, optimal layout depends on the ratio of 50% height / 60% width.
     //
     // Once basic layout is determined, we can tweak it based on actual screen size, within the scope of the overall
@@ -112,13 +114,14 @@ function handleDisplayRefresh() {
         updateStylesheet("canvas", "margin-right", "0vw");
         document.getElementById("entirePage").innerHTML =
             "<h1>Hangman" +
-                "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
-                "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
-                "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
-                "<img src=\"hangmanImage/preferences.png\" onClick=\"showPreferences()\" class=\"iconButtonImage\"/>" +
+            "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
+            "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
+            "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
+            "<img src=\"hangmanImage/preferences.png\" onClick=\"showPreferences()\" class=\"iconButtonImage\"/>" +
             "<img src=\"hangmanImage/help.png\" onClick=\"showHelp()\" class=\"iconButtonImage\"/>" +
-                "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
-                "<img src=\"hangmanImage/newGame.png\" onClick=\"resetGame()\" class=\"iconButtonImage\"/>" +
+            "<img src=\"hangmanImage/about.png\" onClick=\"showAbout()\" class=\"iconButtonImage\"/>" +
+            "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
+            "<img src=\"hangmanImage/newGame.png\" onClick=\"resetGame()\" class=\"iconButtonImage\"/>" +
             "</h1>" +
             "<div id=\"divCanvas\"><canvas id=\"hangmanCanvas\"></canvas></div>" +
             "<div id=\"divLetters\"></div>" +
@@ -130,16 +133,17 @@ function handleDisplayRefresh() {
         document.getElementById("entirePage").innerHTML =
             "<div id=\"divCanvas\"><canvas id=\"hangmanCanvas\"></canvas></div>" +
             "<div id=\"divNonCanvas\">" +
-                "<h1>Hangman" +
-                    "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
-                    "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
-                    "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
-                    "<img src=\"hangmanImage/preferences.png\" onClick=\"showPreferences()\" class=\"iconButtonImage\"/>" +
+            "<h1>Hangman" +
+            "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
+            "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
+            "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
+            "<img src=\"hangmanImage/preferences.png\" onClick=\"showPreferences()\" class=\"iconButtonImage\"/>" +
             "<img src=\"hangmanImage/help.png\" onClick=\"showHelp()\" class=\"iconButtonImage\"/>" +
-                    "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
-                    "<img src=\"hangmanImage/newGame.png\" onClick=\"resetGame()\" class=\"iconButtonImage\"/>" +
-                "</h1>" +
-                "<div id=\"divLetters\"></div>" +
+            "<img src=\"hangmanImage/about.png\" onClick=\"showAbout()\" class=\"iconButtonImage\"/>" +
+            "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
+            "<img src=\"hangmanImage/newGame.png\" onClick=\"resetGame()\" class=\"iconButtonImage\"/>" +
+            "</h1>" +
+            "<div id=\"divLetters\"></div>" +
             "</div>" +
             "<div id=\"divWord\"></div>";
     }
@@ -174,6 +178,9 @@ function handleDisplayRefresh() {
     dialogHelp = document.getElementById('help');
     buttonHelp = document.getElementById("btnHelp");
     buttonCloseHelp = document.getElementById("btnCloseHelp");
+    dialogAbout = document.getElementById('about');
+    buttonAbout = document.getElementById("btnAbout");
+    buttonCloseAbout = document.getElementById("btnCloseAbout");
 
     if (Math.max(document.documentElement.clientWidth, window.innerWidth || 0) > 1000) {
         letterDisplayColumns = 13;
@@ -192,6 +199,10 @@ function showPreferences() {
 
 function showHelp() {
     dialogHelp.style.display = 'block';
+}
+
+function showAbout() {
+    dialogAbout.style.display = 'block';
 }
 
 function updateMaxMisses() {
@@ -300,7 +311,7 @@ function drawLetterTable() {
         for (var j = 0; j < letterDisplayColumns; j++) {
             if (i < alphabet.length) {
                 if (alphabetGuesses[i]) {
-                    if(word.indexOf(alphabet.charAt(i)) > -1) {
+                    if (word.indexOf(alphabet.charAt(i)) > -1) {
                         guessHTML = guessHTML + '<td><button class="letterBtn letterBtnHit" disabled>' +
                             alphabet.charAt(i) + '</button></td>';
                     } else {
@@ -308,8 +319,8 @@ function drawLetterTable() {
                             alphabet.charAt(i) + '</button></td>';
                     }
                 } else {
-                    if(gameState === GAME_STATE.LOST) {
-                        if(word.indexOf(alphabet.charAt(i)) > -1) {
+                    if (gameState === GAME_STATE.LOST) {
+                        if (word.indexOf(alphabet.charAt(i)) > -1) {
                             guessHTML = guessHTML + '<td><button class="letterBtn letterBtnActive" disabled>' +
                                 alphabet.charAt(i) + '</button></td>';
                         } else {
@@ -595,7 +606,7 @@ function drawLine(x1, y1, x2, y2) {
 }
 
 function drawEllipse(x, y, w, h) {
-    // From  Steve Tranby via:
+    // From and copyright Steve Tranby via:
     //   https://stackoverflow.com/questions/2172798/how-to-draw-an-oval-in-html5-canvas
     var kappa = .5522848,
         ox = (w / 2) * kappa, // control point offset horizontal
@@ -615,7 +626,7 @@ function drawEllipse(x, y, w, h) {
 }
 
 function drawEllipseByCenter(cx, cy, w, h) {
-    // From  Steve Tranby via:
+    // From and copyright Steve Tranby via:
     //   https://stackoverflow.com/questions/2172798/how-to-draw-an-oval-in-html5-canvas
     drawEllipse(cx - w / 2.0, cy - h / 2.0, w, h);
 }
@@ -649,7 +660,6 @@ function updateStylesheet(selector, property, value) {
     theStylesheet.insertRule(selector + " { " + property + ": " + value + "; }", 0);
 }
 
-
 // Add support for keyboard-based control/input.
 addEventListener('keydown', function (event) {
     if (event.code.substring(0, 3) === "Key") {
@@ -671,5 +681,9 @@ window.onclick = function (event) {
     // Or help window
     if (event.target === dialogHelp) {
         dialogHelp.style.display = "none";
+    }
+    // Or about window
+    if (event.target === dialogAbout) {
+        dialogAbout.style.display = "none";
     }
 };

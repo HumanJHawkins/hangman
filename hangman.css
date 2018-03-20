@@ -47,12 +47,12 @@ td {
     text-align: center;
     margin: -2vw 2vw 2vw 2vw;
     /* color: darkgreen;                /*  Original */
-    color: #759B67;                     /*  Alternate Green: #B9CE2B    */
+    color: #759B67; /*  Alternate Green: #B9CE2B    */
 }
 
 .missedLetter {
     /* color: darkred;                  /*  Original */
-    color: #A82E5D;                     /*  Alternate Red: #914318      */
+    color: #A82E5D; /*  Alternate Red: #914318      */
 }
 
 .letterBtn {
@@ -64,21 +64,22 @@ td {
     padding: 0;
 
 }
+
 .letterBtnActive {
     /* background-color: lightcyan;     /*  Original */
-    background-color: #5EBFB6;          /*  Alternate Blue: #1B8996 or #0BA3D2   */
+    background-color: #5EBFB6; /*  Alternate Blue: #1B8996 or #0BA3D2   */
     color: black;
 }
 
 .letterBtnHit {
     /* background-color: darkgreen;      /*  Original */
-    background-color: #759B67;           /*  Alternate Green: #B9CE2B    */
+    background-color: #759B67; /*  Alternate Green: #B9CE2B    */
     color: black;
 }
 
 .letterBtnMiss {
     /* background-color: darkred;       /*  Original */
-    background-color: #A82E5D;          /*  Alternate Red: #914318      */
+    background-color: #A82E5D; /*  Alternate Red: #914318      */
     color: white;
 }
 
@@ -96,19 +97,23 @@ select {
     margin: 1vw auto auto auto;
 }
 
-.preferenceText {
+.helpEnd {
+    margin-bottom: 2.5vh;
+}
+
+.modalText {
     text-align: left;
     font-family: "Courier New", "Courier", monospaced, serif;
     font-size: calc(6px + .75vw);
     margin: 1vw auto auto auto;
 }
 
-.preferenceHeading {
+.modalHeading {
     font-weight: bold;
     font-size: calc(6px + 1vw);
 }
 
-.preferenceLabel {
+.modalLabel {
     white-space: nowrap;
     overflow: scroll;
 }
@@ -135,6 +140,7 @@ select {
     text-align: left;
     background-color: #fefefe;
     margin: auto;
+    margin-bottom: 20vh;
     padding: 1vw;
     border: 1px solid #888;
     width: 80vw;
@@ -164,6 +170,7 @@ select {
     padding: 0;
     border: thin solid transparent; /* Transparent non-hover border prevents shifting icons on hover.  */
 }
+
 .iconButtonImage:hover {
     background-color: lightgray;
     border-color: black;

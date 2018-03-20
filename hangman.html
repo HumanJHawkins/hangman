@@ -12,11 +12,11 @@
 <div id="preferences" class="modal">
     <div id="divPreferenceDialog" class="modal-content">
         <div id="btnClosePreferences" class="modalClose" onClick="dialogPreferences.style.display='none'">&times;</div>
-        <h3 class="preferenceText preferenceHeading">Preferences: </h3>
+        <h3 class="modalText modalHeading">Preferences: </h3>
         <p class="indent">
-            <span class="preferenceText">
+            <span class="modalText">
                 <!-- Select control for low and high character length of potential words -->
-                <span class="preferenceText preferenceLabel"><label for="wordLength">Word&nbsp;Length:&nbsp;</label>
+                <span class="modalText modalLabel"><label for="wordLength">Word&nbsp;Length:&nbsp;</label>
                     <select id="wordLength" onChange="updateWordPoolFiltered()">
                         <option value="{&quot;low&quot;: 4, &quot;high&quot;: 10}">Normal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
                         <option value="{&quot;low&quot;: 2, &quot;high&quot;: 3}">Short</option>
@@ -25,7 +25,7 @@
                     </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </span>
                 <!-- Select control for low and high grade level of potential words -->
-                <span class="preferenceText preferenceLabel"><label for="wordLevel">Word&nbsp;Level:&nbsp;&nbsp;</label>
+                <span class="modalText modalLabel"><label for="wordLevel">Word&nbsp;Level:&nbsp;&nbsp;</label>
                     <select id="wordLevel" onChange="updateWordPoolFiltered()">
                         <option value="{&quot;low&quot;: 2, &quot;high&quot;: 12}">Normal</option>
                         <option value="{&quot;low&quot;: -1, &quot;high&quot;: 1}">Beginning Readers</option>
@@ -35,7 +35,7 @@
                     </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </span>
                 <!-- Select control for number of incorrect guesses before loss.  -->
-                <span class="preferenceText preferenceLabel"><label for="gameDifficulty">Difficulty:&nbsp;&nbsp;</label>
+                <span class="modalText modalLabel"><label for="gameDifficulty">Difficulty:&nbsp;&nbsp;</label>
                     <select id="gameDifficulty" onChange="updateMaxMisses()">
                         <option value="10">Normal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
                         <option value="7">Hard</option>
@@ -46,7 +46,7 @@
             </span>
         </p>
         <p>&nbsp;</p>
-        <div id="divWordCount" class="preferenceText indent"></div>
+        <div id="divWordCount" class="modalText indent"></div>
     </div>
 </div>
 
@@ -54,7 +54,7 @@
 <div id="help" class="modal">
     <div id="divHelpDialog" class="modal-content">
         <div id="btnCloseHelp" class="modalClose" onClick="dialogHelp.style.display='none'">&times;</div>
-        <h3 class="preferenceText preferenceHeading">Help! </h3>
+        <h3 class="modalText modalHeading">Help! </h3>
         <p class="indent helpText">
             Hangman is a traditional word guessing / spelling game that
             <a href="https://en.wikipedia.org/wiki/Hangman_(game)" target="_blank">appears to have originated</a> during
@@ -68,8 +68,36 @@
             guesses before the person is fully drawn. Word level and word length options filter the words that can be
             selected.
         </p>
-        <p class="indent helpText">
+        <p class="indent helpText helpEnd">
             Good luck!
+        </p>
+    </div>
+</div>
+
+<!-- Modal about dialog. Hidden while not in use. -->
+<div id="about" class="modal">
+    <div id="divAboutDialog" class="modal-content">
+        <div id="btnCloseAbout" class="modalClose" onClick="dialogAbout.style.display='none'">&times;</div>
+        <h3 class="modalText modalHeading">About Hangman</h3>
+        <p class="indent helpText">
+            This implementation of the traditional Hangman game is dedicated to my curious daughter who loves its words,
+            and to my inquiring son who loves to solve these in as few guesses as possible.
+        </p>
+        <p class="indent helpText">
+            It is an example of a single page web app (SPA) built using HTML5, CSS3, and plain Javascript. I've
+            attempted to demonstrate good universal design around color blindness. Universal design is the idea that
+            well designed things should naturally work well for both able-bodied and less able-bodied people. You
+            don't have to sacrifice one for the other. Also, I've attempted to create a concise
+            <a href="https://en.wikipedia.org/wiki/Responsive_web_design">responsive web design</a>. I'll let you be the
+            judge of whether i've succeeded in these things or not.
+        </p>
+        <p class="indent helpText">
+            Full source code is available at
+            <a href="https://github.com/HumanJHawkins/hangman">https://github.com/HumanJHawkins/hangman</a>, with the
+            most interesting bits in the .js file there. Copyright &copy;2018, Jeff Hawkins except as noted in the code.
+        </p>
+        <p class="indent helpText helpEnd">
+            Thanks!
         </p>
     </div>
 </div>
