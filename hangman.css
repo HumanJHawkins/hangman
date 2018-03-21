@@ -74,13 +74,13 @@ td {
 .letterBtnHit {
     /* background-color: darkgreen;      /*  Original */
     background-color: #759B67; /*  Alternate Green: #B9CE2B    */
-    color: black;
+    color: white;
 }
 
 .letterBtnMiss {
     /* background-color: darkred;       /*  Original */
     background-color: #A82E5D; /*  Alternate Red: #914318      */
-    color: white;
+    color: black;
 }
 
 select {
@@ -169,6 +169,7 @@ select {
     min-height: 8px;
     padding: 0;
     border: thin solid transparent; /* Transparent non-hover border prevents shifting icons on hover.  */
+    vertical-align:-.09em;
 }
 
 .iconButtonImage:hover {
