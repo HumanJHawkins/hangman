@@ -208,7 +208,7 @@ function showAbout() {
 function updateMaxMisses() {
     if (gameState === GAME_STATE.PROGRESSING || gameState === GAME_STATE.IMPERILED) {
         if (confirm("Apply this difficulty change to the current game?\n\nClick 'Cancel' to finish this game " +
-                "first. Your changes will apply to the next game.")) {
+            "first. Your changes will apply to the next game.")) {
             // Dismiss the preferences dialog.
             dialogPreferences.style.display = "none";
             maxMisses = parseInt(document.getElementById('gameDifficulty').value);
@@ -269,7 +269,7 @@ function updateWordPoolFiltered() {
         drawHangmanWord();
     } else {
         if (confirm("Reset the game with a new word based on these options?\n\nClick 'Cancel' to finish this game " +
-                "first, having your changes apply to the next game.")) {
+            "first, having your changes apply to the next game.")) {
             newGame();
             dialogPreferences.style.display = "none";
 
@@ -442,40 +442,31 @@ function getHangmanDrawStep() {
     } else if (maxMisses === 7) {
         if (missCount === 1) {
             return 2;
-        }
-        else if (missCount === 2) {  // For example, when max misses is 7 and the user has missed two, we draw 4 body parts.
+        } else if (missCount === 2) {  // For example, when max misses is 7 and the user has missed two, we draw 4 body parts.
             return 4;
-        }
-        else if (missCount === 3) {
+        } else if (missCount === 3) {
             return 5;
-        }
-        else if (missCount === 4) {
+        } else if (missCount === 4) {
             return 6;
-        }
-        else if (missCount === 5) {
+        } else if (missCount === 5) {
             return 7;
-        }
-        else if (missCount === 6) {
+        } else if (missCount === 6) {
             return 8;
         }
     } else if (maxMisses === 5) {
         if (missCount === 1) {
             return 2;
-        }
-        else if (missCount === 2) {
+        } else if (missCount === 2) {
             return 4;
-        }
-        else if (missCount === 3) {
+        } else if (missCount === 3) {
             return 6;
-        }
-        else if (missCount === 4) {
+        } else if (missCount === 4) {
             return 8;
         }
     } else if (maxMisses === 3) {
         if (missCount === 1) {
             return 4;
-        }
-        else if (missCount === 2) {
+        } else if (missCount === 2) {
             return 8;
         }
     }
@@ -660,30 +651,47 @@ function updateStylesheet(selector, property, value) {
     theStylesheet.insertRule(selector + " { " + property + ": " + value + "; }", 0);
 }
 
+// Based on https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode
+window.addEventListener("keydown", function (event) {
+    if (event.defaultPrevented) {
+        return; // Should do nothing if the default action has been cancelled
+    }
 
-var dispatchForCode = function(event, callback) {
-    var code;
+    let handled = false;
+    let theKey;
 
     if (event.key !== undefined) {
-        code = event.key;
-    } else if (event.keyIdentifier !== undefined) {
-        code = event.keyIdentifier;
+        // Use "key' if available as this is most standard.
+        theKey = event.key.toUpperCase();
     } else if (event.keyCode !== undefined) {
-        code = event.keyCode;
+        // Where 'key' is unsupported, the deprecated 'keyCode' will usually work.
+        alert('Key Code: ' + event.keyCode);
+        if (event.keyCode === 13) {
+            theKey = 'ENTER';
+        } else {
+            theKey = String.fromCharCode(event.keyCode);
+        }
+    } else {
+        // In theory, implementing handling by event.keyIdentifier could be required in some
+        //  environments. But there is no evidence that this is needed, and no environment
+        //  to test it has been identified.
     }
 
-    callback(code);
-};
-
-
-// Add support for keyboard-based control/input.
-addEventListener('keydown', function (event) {
-    if (event.code.substring(0, 3) === "Key") {
-        handleGuess(event.code.substring(3));
-    } else if (event.keyCode === 13 && event.shiftKey && event.ctrlKey) {
+    if (theKey.length === 1) {
+        if (theKey >= "A" && theKey <= "Z") {
+            handleGuess(theKey);
+            handled = true;
+        }
+    } else if (theKey === 'ENTER' && event.shiftKey && event.ctrlKey) {
         resetGame();
     }
-});
+
+    if (handled) {
+        // Suppress "double action" if event handled
+        event.preventDefault();
+    }
+}, true);
+
 
 addEventListener('resize', function () {
     handleDisplaySize();
