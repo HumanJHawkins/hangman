@@ -1,5 +1,5 @@
 // Initialize global constants/statics. Load word list, etc.
-var GAME_STATE = Object.freeze({
+let GAME_STATE = Object.freeze({
     "ERROR": 0,
     "PENDING": 1,
     "PROGRESSING": 2,   // Game in progress.
@@ -8,7 +8,7 @@ var GAME_STATE = Object.freeze({
     "LOST": 5
 });
 
-var HANGMAN_PART = Object.freeze({
+let HANGMAN_PART = Object.freeze({
     "FRAME": 1,
     "GALLOWS": 2,   // TO DO: Implement draw of gallows.
     "ROPE": 3,
@@ -38,32 +38,32 @@ var HANGMAN_PART = Object.freeze({
     "MOUTH_DEAD": 27
 });
 
-var theCanvas;
-var theContext;
-var gameState;
-var windowHeight;
-var windowWidth;
-var dialogPreferences;
-var buttonPreferences;
-var buttonClosePreferences;
-var dialogHelp;
-var buttonHelp;
-var buttonCloseHelp;
-var dialogAbout;
-var buttonAbout;
-var buttonCloseAbout;
-var letterDisplayColumns;
-var alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-var alphabetGuesses;                // Letters guessed so far, inclusive of correct and incorrect.
-var wordPool;                       // Full word pool (Read in on first page load.)
-var wordPoolFiltered;               // Portion of word pool allowed by preference controls.
-var word;
-var hitCount;                       // Count of letters exposed. Not necessarily count of correct guesses.
-var missCount;
-var maxMisses;
+let theCanvas;
+let theContext;
+let gameState;
+let windowHeight;
+let windowWidth;
+let dialogPreferences;
+let buttonPreferences;
+let buttonClosePreferences;
+let dialogHelp;
+let buttonHelp;
+let buttonCloseHelp;
+let dialogAbout;
+let buttonAbout;
+let buttonCloseAbout;
+let letterDisplayColumns;
+let alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+let alphabetGuesses;                // Letters guessed so far, inclusive of correct and incorrect.
+let wordPool;                       // Full word pool (Read in on first page load.)
+let wordPoolFiltered;               // Portion of word pool allowed by preference controls.
+let word;
+let hitCount;                       // Count of letters exposed. Not necessarily count of correct guesses.
+let missCount;
+let maxMisses;
 
 // Load the full word list.
-var vocabRequest = new XMLHttpRequest();
+let vocabRequest = new XMLHttpRequest();
 vocabRequest.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 200) {
         wordPool = JSON.parse(this.responseText);
@@ -79,7 +79,7 @@ function newGame() {
 
     // Initialize guesses to <nothing guessed yet>
     alphabetGuesses = [];
-    for (var i = 0; i < alphabet.length; i++) {
+    for (let i = 0; i < alphabet.length; i++) {
         alphabetGuesses.push(false);
     }
 
@@ -106,7 +106,7 @@ function handleDisplayRefresh() {
     // Once basic layout is determined, we can tweak it based on actual screen size, within the scope of the overall
     // layout. See also:
     //   https://docs.microsoft.com/en-us/windows/uwp/design/layout/screen-sizes-and-breakpoints-for-responsive-design
-    var useTallLayout = (windowHeight * 0.5) / (windowWidth * .6) > 1;
+    let useTallLayout = (windowHeight * 0.5) / (windowWidth * .6) > 1;
 
     if (useTallLayout) {
         // Tall Layout
@@ -114,14 +114,14 @@ function handleDisplayRefresh() {
         updateStylesheet("canvas", "margin-right", "0vw");
         document.getElementById("entirePage").innerHTML =
             "<h1>Hangman" +
-            "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
-            "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
-            "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
-            "<img src=\"hangmanImage/preferences.png\" onClick=\"showPreferences()\" class=\"iconButtonImage\"/>" +
-            "<img src=\"hangmanImage/help.png\" onClick=\"showHelp()\" class=\"iconButtonImage\"/>" +
-            "<img src=\"hangmanImage/about.png\" onClick=\"showAbout()\" class=\"iconButtonImage\"/>" +
-            "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
-            "<img src=\"hangmanImage/newGame.png\" onClick=\"resetGame()\" class=\"iconButtonImage\"/>" +
+            "<img src=\"hangmanImage/blank.png\" alt=\"\" class=\"iconButtonSpacer\"/>" +
+            "<img src=\"hangmanImage/blank.png\" alt=\"\" class=\"iconButtonSpacer\"/>" +
+            "<img src=\"hangmanImage/blank.png\" alt=\"\" class=\"iconButtonSpacer\"/>" +
+            "<img src=\"hangmanImage/preferences.png\" alt=\"Preferences\" onClick=\"showPreferences()\" class=\"iconButtonImage\"/>" +
+            "<img src=\"hangmanImage/help.png\" alt=\"Help\" onClick=\"showHelp()\" class=\"iconButtonImage\"/>" +
+            "<img src=\"hangmanImage/about.png\" alt=\"About\" onClick=\"showAbout()\" class=\"iconButtonImage\"/>" +
+            "<img src=\"hangmanImage/blank.png\" alt=\"\" class=\"iconButtonSpacer\"/>" +
+            "<img src=\"hangmanImage/newGame.png\" alt=\"New Game\" onClick=\"resetGame()\" class=\"iconButtonImage\"/>" +
             "</h1>" +
             "<div id=\"divCanvas\"><canvas id=\"hangmanCanvas\"></canvas></div>" +
             "<div id=\"divLetters\"></div>" +
@@ -134,14 +134,14 @@ function handleDisplayRefresh() {
             "<div id=\"divCanvas\"><canvas id=\"hangmanCanvas\"></canvas></div>" +
             "<div id=\"divNonCanvas\">" +
             "<h1>Hangman" +
-            "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
-            "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
-            "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
-            "<img src=\"hangmanImage/preferences.png\" onClick=\"showPreferences()\" class=\"iconButtonImage\"/>" +
-            "<img src=\"hangmanImage/help.png\" onClick=\"showHelp()\" class=\"iconButtonImage\"/>" +
-            "<img src=\"hangmanImage/about.png\" onClick=\"showAbout()\" class=\"iconButtonImage\"/>" +
-            "<img src=\"hangmanImage/blank.png\" class=\"iconButtonSpacer\"/>" +
-            "<img src=\"hangmanImage/newGame.png\" onClick=\"resetGame()\" class=\"iconButtonImage\"/>" +
+            "<img src=\"hangmanImage/blank.png\" alt=\"\" class=\"iconButtonSpacer\"/>" +
+            "<img src=\"hangmanImage/blank.png\" alt=\"\" class=\"iconButtonSpacer\"/>" +
+            "<img src=\"hangmanImage/blank.png\" alt=\"\" class=\"iconButtonSpacer\"/>" +
+            "<img src=\"hangmanImage/preferences.png\" alt=\"Preferences\" onClick=\"showPreferences()\" class=\"iconButtonImage\"/>" +
+            "<img src=\"hangmanImage/help.png\" alt=\"Help\" onClick=\"showHelp()\" class=\"iconButtonImage\"/>" +
+            "<img src=\"hangmanImage/about.png\" alt=\"About\" onClick=\"showAbout()\" class=\"iconButtonImage\"/>" +
+            "<img src=\"hangmanImage/blank.png\" alt=\"\" class=\"iconButtonSpacer\"/>" +
+            "<img src=\"hangmanImage/newGame.png\" alt=\"New Game\" onClick=\"resetGame()\" class=\"iconButtonImage\"/>" +
             "</h1>" +
             "<div id=\"divLetters\"></div>" +
             "</div>" +
@@ -153,21 +153,21 @@ function handleDisplayRefresh() {
     theContext = theCanvas.getContext("2d");
     theCanvas.width = 400;
     theCanvas.height = 500;
-    var canvasWidthHeightRatio = theCanvas.width / theCanvas.height;
-    var canvasHeightWidthRatio = theCanvas.height / theCanvas.width;
+    let canvasWidthHeightRatio = theCanvas.width / theCanvas.height;
+    let canvasHeightWidthRatio = theCanvas.height / theCanvas.width;
 
     if (useTallLayout) {
         // If tall, set height up to 50%, as long as width fits the visible page.
-        var idealHeight = windowHeight * 0.5;
-        var maxHeight = windowWidth * canvasHeightWidthRatio;
-        var height = (idealHeight <= maxHeight) ? idealHeight : maxHeight;
+        let idealHeight = windowHeight * 0.5;
+        let maxHeight = windowWidth * canvasHeightWidthRatio;
+        let height = (idealHeight <= maxHeight) ? idealHeight : maxHeight;
         updateStylesheet("canvas", "width", "inherit");
         updateStylesheet("canvas", "height", height + "px");
     } else {
         // If wide, set width up to 32%, as long as height fits the visible page.
-        var idealWidth = windowWidth * 0.32;
-        var maxWidth = (windowHeight * .92) * canvasWidthHeightRatio; // *.92 to accomodate margins
-        var width = (idealWidth <= maxWidth) ? idealWidth : maxWidth;
+        let idealWidth = windowWidth * 0.32;
+        let maxWidth = (windowHeight * .92) * canvasWidthHeightRatio; // *.92 to accomodate margins
+        let width = (idealWidth <= maxWidth) ? idealWidth : maxWidth;
         updateStylesheet("canvas", "width", width + "px");
         updateStylesheet("canvas", "height", "inherit");
     }
@@ -252,7 +252,7 @@ function updateEnabledState() {
 
 function updateWordPoolFiltered() {
     wordPoolFiltered = [];
-    for (var i = 0; i < wordPool.length; i++) {
+    for (let i = 0; i < wordPool.length; i++) {
         if (wordPool[i].vocabWord.length >= JSON.parse(document.getElementById("wordLength").value).low &&
             wordPool[i].vocabWord.length <= JSON.parse(document.getElementById("wordLength").value).high &&
             wordPool[i].wordGrade >= JSON.parse(document.getElementById("wordLevel").value).low &&
@@ -287,8 +287,8 @@ function randIntBetween(randMin, randMax) {
 
 function drawHangmanWord() {
     if (!word) return;
-    var wordDisplay = '<p class="hangmanWord">';
-    for (var i = 0; i < word.length; i++) {
+    let wordDisplay = '<p class="hangmanWord">';
+    for (let i = 0; i < word.length; i++) {
         if (alphabetGuesses[alphabet.indexOf(word.charAt(i))] === true) {
             wordDisplay = wordDisplay + word.charAt(i);
         } else {
@@ -305,10 +305,10 @@ function drawHangmanWord() {
 
 function drawLetterTable() {
     if (!alphabetGuesses) return;
-    var guessHTML = '<table>';
-    for (var i = 0; i < alphabet.length;) {    // Increment "i" only once per "j" number of letters (so, not here).
+    let guessHTML = '<table>';
+    for (let i = 0; i < alphabet.length;) {    // Increment "i" only once per "j" number of letters (so, not here).
         guessHTML = guessHTML + '<tr>';
-        for (var j = 0; j < letterDisplayColumns; j++) {
+        for (let j = 0; j < letterDisplayColumns; j++) {
             if (i < alphabet.length) {
                 if (alphabetGuesses[i]) {
                     if (word.indexOf(alphabet.charAt(i)) > -1) {
@@ -355,7 +355,7 @@ function handleGuess(theGuess) {
         alphabetGuesses[alphabet.indexOf(theGuess)] = true;      // Mark letter as guessed, regardless of hit.
 
         if (word.indexOf(theGuess) > -1) {                      // If this guess has at least one hit
-            var hitIndex = 0;
+            let hitIndex = 0;
             while (word.indexOf(theGuess, hitIndex) > -1) {     // Add all (multiple letter) hits to hitCount.
                 hitIndex = word.indexOf(theGuess, hitIndex) + 1;
                 hitCount++;
@@ -376,15 +376,15 @@ function drawHangman() {
     theContext.lineWidth = "3";
     theContext.lineCap = "round";
 
-    var hangmanParts = getHangmanParts();
-    for (var i = 0; i < hangmanParts.length; i++) {
+    let hangmanParts = getHangmanParts();
+    for (let i = 0; i < hangmanParts.length; i++) {
         drawHangmanPart(hangmanParts[i]);
     }
 }
 
 function getHangmanParts() {
-    var hangmanParts = [];
-    var step = getHangmanDrawStep();
+    let hangmanParts = [];
+    let step = getHangmanDrawStep();
 
     hangmanParts.push(HANGMAN_PART.FRAME);
     if (gameState !== GAME_STATE.WON) {
@@ -482,20 +482,20 @@ function getHangmanDrawStep() {
 }
 
 function drawHangmanPart(thePart) {
-    var winOffset;  // On win, we'll draw the same figure lower (on the ground). So, add offset to move it.
+    let winOffset;  // On win, we'll draw the same figure lower (on the ground). So, add offset to move it.
     if (gameState === GAME_STATE.WON) {
         winOffset = 76;
     } else {
         winOffset = 0;
     }
 
-    var left = 0;
-    var right = theCanvas.width - left;
-    var top = 0;
-    var bottom = theCanvas.height - top;
-    var middle = theCanvas.width / 2;
-    var widthFactor = theCanvas.width / 200;
-    var heightFactor = theCanvas.height / 250;
+    let left = 0;
+    let right = theCanvas.width - left;
+    let top = 0;
+    let bottom = theCanvas.height - top;
+    let middle = theCanvas.width / 2;
+    let widthFactor = theCanvas.width / 200;
+    let heightFactor = theCanvas.height / 250;
 
     theContext.strokeStyle = "green";   // Most are green, so default to this.
 
@@ -608,7 +608,7 @@ function drawLine(x1, y1, x2, y2) {
 function drawEllipse(x, y, w, h) {
     // From and copyright Steve Tranby via:
     //   https://stackoverflow.com/questions/2172798/how-to-draw-an-oval-in-html5-canvas
-    var kappa = .5522848,
+    let kappa = .5522848,
         ox = (w / 2) * kappa, // control point offset horizontal
         oy = (h / 2) * kappa, // control point offset vertical
         xe = x + w,           // x-end
@@ -633,7 +633,7 @@ function drawEllipseByCenter(cx, cy, w, h) {
 
 function resetGame() {
     // If game is in progress, confirm reset.
-    var reset = true;
+    let reset = true;
     if (gameState === GAME_STATE.PROGRESSING || gameState === GAME_STATE.IMPERILED) {
         if (!confirm("This will reset your game in progress. Click 'OK' to confirm.")) {
             reset = false;
@@ -649,9 +649,9 @@ function resetGame() {
 
 function updateStylesheet(selector, property, value) {
     // Adds or changes style in highest index of stylesheet.
-    var theStylesheet = document.styleSheets[(document.styleSheets.length - 1)];
-    for (var i = 0; i < theStylesheet.cssRules.length; i++) {
-        var rule = theStylesheet.cssRules[i];
+    let theStylesheet = document.styleSheets[(document.styleSheets.length - 1)];
+    for (let i = 0; i < theStylesheet.cssRules.length; i++) {
+        let rule = theStylesheet.cssRules[i];
         if (rule.selectorText === selector) {
             rule.style[property] = value;
             return;
@@ -659,6 +659,22 @@ function updateStylesheet(selector, property, value) {
     }
     theStylesheet.insertRule(selector + " { " + property + ": " + value + "; }", 0);
 }
+
+
+var dispatchForCode = function(event, callback) {
+    var code;
+
+    if (event.key !== undefined) {
+        code = event.key;
+    } else if (event.keyIdentifier !== undefined) {
+        code = event.keyIdentifier;
+    } else if (event.keyCode !== undefined) {
+        code = event.keyCode;
+    }
+
+    callback(code);
+};
+
 
 // Add support for keyboard-based control/input.
 addEventListener('keydown', function (event) {
