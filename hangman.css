@@ -169,7 +169,7 @@ select {
     min-height: 8px;
     padding: 0;
     border: thin solid transparent; /* Transparent non-hover border prevents shifting icons on hover.  */
-    vertical-align:-.09em;
+    vertical-align: -.09em;
 }
 
 .iconButtonImage:hover {
